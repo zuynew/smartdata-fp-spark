@@ -15,40 +15,6 @@ import zio.{Exit, Task, UIO, ZManaged}
 import java.time.temporal.ChronoUnit
 import scala.jdk.CollectionConverters._
 object ZioSparkJob extends App {
-  val cfg = ConfigFactory.load()
-
-  val partition: String   = args(0)
-  val tableSuffix: String = args(1)
-
-  val spark = SparkSession.builder
-    .appName("Application")
-    .getOrCreate()
-
-  (for {
-    cfg       <- ZManaged.fromEither(
-                   ConfigSource
-                     .fromConfig(ConfigFactory.load())
-                     .load[config.AppConfig]
-                     .leftMap(errors.ApplicationError.ConfigError)
-                 )
-    arguments <-
-      ZManaged.fromEither(
-        arguments.command
-          .parse(args, sys.env)
-          .leftMap(errors.ApplicationError.CommandlineArgumentsError)
-      )
-    spark     <- ZManaged
-                   .make(
-                     Task(
-                       SparkSession.builder
-                         .appName("Application")
-                         .getOrCreate()
-                     )
-                   )(ss => UIO(ss.stop()))
-                   .mapError(errors.ApplicationError.ExecutionError)
-  } yield runtime.ContextV1(cfg, runtime.Args.tupled(arguments), spark))
-    .use(ctx => { ??? })
-
   val eff = (for {
     cfg        <- ZManaged.fromEither(
                     ConfigSource
