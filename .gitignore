@@ -1,0 +1,6 @@
+.idea
+target
+.bsp
+scala/target/
+scala/.idea/
+target/
