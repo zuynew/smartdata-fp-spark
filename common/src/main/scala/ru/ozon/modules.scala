@@ -50,12 +50,12 @@ object modules extends ModuleDef {
         Task
           .fromEither(
             (
-              Validated.fromOption(cfgMap.get("host"), "host is not set"),
-              Validated.fromOption(cfgMap.get("user"), "user is not set"),
-              Validated.fromOption(cfgMap.get("db"), "db is not set"),
-              Validated.fromOption(cfgMap.get("password"), "password is not set"),
-              Validated.fromOption(cfgMap.get("stagingFsUrl"), "stagingFsUrl is not set"),
-            ).tupled.toValidatedNel.toEither.leftMap(errors.ApplicationError.VerticaConfigurationInitializationError)
+              Validated.fromOption(cfgMap.get("host"), "host is not set").toValidatedNel,
+              Validated.fromOption(cfgMap.get("user"), "user is not set").toValidatedNel,
+              Validated.fromOption(cfgMap.get("db"), "db is not set").toValidatedNel,
+              Validated.fromOption(cfgMap.get("password"), "password is not set").toValidatedNel,
+              Validated.fromOption(cfgMap.get("stagingFsUrl"), "stagingFsUrl is not set").toValidatedNel,
+            ).tupled.toEither.leftMap(errors.ApplicationError.VerticaConfigurationInitializationError)
           )
           .map(runtime.Vertica.tupled)
       )
